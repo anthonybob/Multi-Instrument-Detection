@@ -88,4 +88,4 @@ def convert_signals_to_spectograms():
     print('Done Converting!')
         
 if __name__ == '__main__':
-    file_test()
+    convert_signals_to_spectograms()
