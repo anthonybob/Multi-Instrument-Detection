@@ -3,6 +3,7 @@ import librosa
 import librosa.display
 import scipy
 import numpy as np
+import os
 class Spectogram():
     #Window length is the size of the window
     #Window padding is number of zeros to pad audio after window is applied
@@ -77,5 +78,19 @@ def file_test():
     spec=Spectogram.load_spectogram_from_file('spec')
     Spectogram.display_real_spectogram(spec)
 
+def convert_signals_to_spectograms():
+    spectogram = Spectogram()
+    for data_dir in ['test_data/', 'training_data/', 'validation_data/']:
+        print('Converting' + data_dir)
+        for label_dir in os.listdir(data_dir):
+            os.mkdir(data_dir + 'spec' + label_dir)
+            path = data_dir + label_dir + '/'
+            for wav_file in os.listdir(path):
+                print('Converting ' + wav_file)
+                spec = wav_file + '.spec'
+                spec_path = data_dir + 'spec' + label_dir + '/'
+                spectogram.signal_to_spectogram_file(path + wav_file, spec_path + spec)
+    print('Done Converting!')
+        
 if __name__ == '__main__':
-    file_test()
+    convert_signals_to_spectograms()
