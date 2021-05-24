@@ -81,7 +81,7 @@ def file_test():
 def convert_signals_to_spectograms():
     spectogram = Spectogram()
     for data_dir in ['test_data/', 'training_data/', 'validation_data/']:
-        print('Converting' + data_dir)
+        print('Converting' + ' ' + data_dir)
         for label_dir in os.listdir(data_dir):
             os.mkdir(data_dir + 'spec' + label_dir)
             path = data_dir + label_dir + '/'
