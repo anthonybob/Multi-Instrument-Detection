@@ -49,13 +49,13 @@ class Spectogram_DataLoader(torch.utils.data.DataLoader):
     def __init__(self, spectogram_files):
         self.length = len(spectogram_files)
         self.spectograms = []
-        for spectogram_file in spectogram_files:
+        for spectogram_file, label in spectogram_files:
             print("Loading " + spectogram_file)
             spectogram = Spectogram.load_spectogram_from_file(spectogram_file)
             #Arguably spectogram in db scale is a better image 
             spectogram = Spectogram.real_spectogram_to_db_spectogram(spectogram)
             spectogram = torch.from_numpy(spectogram)
-            self.spectograms.append(spectogram)
+            self.spectograms.append((spectogram, label))
     
     def __len__(self):
         return self.length
