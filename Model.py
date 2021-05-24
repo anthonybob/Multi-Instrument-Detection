@@ -1,5 +1,6 @@
 import torch
-
+import numpy as np
+from Spectogram import Spectogram
 class Model:
 
     def __init__(self, model, loader, optimizer, device, criterion):
@@ -44,8 +45,24 @@ class Model:
                     total += 1
         return correct / total
 
+class Spectogram_DataLoader(torch.utils.data.DataLoader):
+    def __init__(self, spectogram_files):
+        self.length = len(spectogram_files)
+        self.spectograms = []
+        for spectogram_file in spectogram_files:
+            print("Loading " + spectogram_file)
+            spectogram = Spectogram.load_spectogram_from_file(spectogram_file)
+            #Arguably spectogram in db scale is a better image 
+            spectogram = Spectogram.real_spectogram_to_db_spectogram(spectogram)
+            spectogram = torch.from_numpy(spectogram)
+            self.spectograms.append(spectogram)
+    
+    def __len__(self):
+        return self.length
 
-
+    def __getitem__(self, idx):
+        return self.spectograms[idx]
+        
 class FC(torch.nn.Module):
     def __init__(self, activation, num_hidden_nodes, num_inputs, outputs):
         super().__init__()

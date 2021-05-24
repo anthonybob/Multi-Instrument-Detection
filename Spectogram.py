@@ -39,8 +39,8 @@ class Spectogram():
                     complex_val = spectogram_matrix[frequency_bin][time_val]
                     f.write(str(complex_val.real) + ' ' + str(complex_val.imag) + ' ' + 
                     str(np.abs(complex_val)) + ' ' + str(np.angle(complex_val)) + '\n')
-
-    def load_spectogram_from_file(self, spectogram_file):
+    @staticmethod
+    def load_spectogram_from_file(spectogram_file):
         with open(spectogram_file) as f:
             time_dim, freq_dim = [int(x) for x in f.readline().split()]
             spectogram_matrix = np.zeros(shape=(freq_dim,time_dim))
@@ -49,19 +49,21 @@ class Spectogram():
                     spectogram_matrix[freq, time] = f.readline().split()[2]
         return spectogram_matrix
 
-    def real_spectogram_to_db_spectogram(self, spectogram):
+    @staticmethod
+    def real_spectogram_to_db_spectogram(spectogram):
         return librosa.amplitude_to_db(spectogram, ref=np.max)
 
-
-    def display_complex_spectogram(self, spectogram):
+    @staticmethod
+    def display_complex_spectogram(spectogram):
         real_spectogram_db = librosa.amplitude_to_db(np.abs(spectogram), ref=np.max)
         plt.figure()
         librosa.display.specshow(real_spectogram_db)
         plt.colorbar()
         plt.show()
 
-    def display_real_spectogram(self, spectogram):
-        real_spectogram_db = self.real_spectogram_to_db_spectogram(spectogram)
+    @staticmethod
+    def display_real_spectogram(spectogram):
+        real_spectogram_db = Spectogram.real_spectogram_to_db_spectogram(spectogram)
         plt.figure()
         librosa.display.specshow(real_spectogram_db)
         plt.colorbar()
@@ -70,10 +72,10 @@ class Spectogram():
 def file_test():
     spectogram = Spectogram()
     spec=spectogram.signal_to_spectogram('test_data/0/Medley-solos-DB_test-0_7f9c729c-396b-5cd7-f2ea-b137d8ee7222.wav')
-    spectogram.display_complex_spectogram(spec)
+    Spectogram.display_complex_spectogram(spec)
     spectogram.signal_to_spectogram_file('test_data/0/Medley-solos-DB_test-0_7f9c729c-396b-5cd7-f2ea-b137d8ee7222.wav', 'spec')
-    spec=spectogram.load_spectogram_from_file('spec')
-    spectogram.display_real_spectogram(spec)
+    spec=Spectogram.load_spectogram_from_file('spec')
+    Spectogram.display_real_spectogram(spec)
 
 if __name__ == '__main__':
     file_test()
