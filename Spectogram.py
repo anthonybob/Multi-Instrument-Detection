@@ -29,14 +29,6 @@ class Spectogram():
             return "0"
         return "{:.2f}".format(real_num)
 
-    #The spectogram file output is as follows:
-    #The first line has two integers. The first number is the number of time samples, and the second number is the number of 
-    #frequency bins in the STFT. 
-    #Following that each line has four integers that represent the data of the STFT starting with the frequency bins for the first time sample,
-    #all the way to the frequency bins to the last time sample. 
-    #Each line represents one frequency bin for one time sample.
-    #The two integers are the real and complex part of the complex number associated with the frequency bin for the given time in the STFT.
-    #The last two integers are respectively the magnitude and phase of the frequency bins.
     def signal_to_spectogram_file(self, wav_file, spectogram_file):
         spectogram_matrix = self.signal_to_spectogram(wav_file)
         np.savetxt(spectogram_file,  np.abs(spectogram_matrix), fmt = '%.2f')
