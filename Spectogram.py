@@ -39,22 +39,10 @@ class Spectogram():
     #The last two integers are respectively the magnitude and phase of the frequency bins.
     def signal_to_spectogram_file(self, wav_file, spectogram_file):
         spectogram_matrix = self.signal_to_spectogram(wav_file)
-        with open(spectogram_file, 'w') as f:
-            f.write(str(spectogram_matrix.shape[1]) + ' ' + str(spectogram_matrix.shape[0]) + '\n')
-            for time_val in range(spectogram_matrix.shape[1]):
-                for frequency_bin in range(spectogram_matrix.shape[0]):
-                    complex_val = spectogram_matrix[frequency_bin][time_val]
-                    f.write(Spectogram.float_to_string(complex_val.real) + ' ' + Spectogram.float_to_string(complex_val.imag) + ' ' + 
-                    Spectogram.float_to_string(np.abs(complex_val)) + ' ' + Spectogram.float_to_string(np.angle(complex_val)) + '\n')
+        np.savetxt(spectogram_file,  np.abs(spectogram_matrix), fmt = '%.2f')
     @staticmethod
     def load_spectogram_from_file(spectogram_file):
-        with open(spectogram_file) as f:
-            time_dim, freq_dim = [int(x) for x in f.readline().split()]
-            spectogram_matrix = np.zeros(shape=(freq_dim,time_dim))
-            for time in range(time_dim):
-                for freq in range(freq_dim):
-                    spectogram_matrix[freq, time] = f.readline().split()[2]
-        return spectogram_matrix
+        return np.loadtxt(spectogram_file)
 
     @staticmethod
     def real_spectogram_to_db_spectogram(spectogram):
@@ -100,4 +88,4 @@ def convert_signals_to_spectograms():
     print('Done Converting!')
         
 if __name__ == '__main__':
-    convert_signals_to_spectograms()
+    file_test()
