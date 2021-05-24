@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 from Spectogram import Spectogram
+import os
 class Model:
 
     def __init__(self, model, loader, optimizer, device, criterion):
@@ -80,3 +81,28 @@ class FC(torch.nn.Module):
         x = self.layers[-1](x)
         return x
 
+def loader(loader_type):
+    files = []
+    prefix = None
+    if loader_type == 'train':
+        prefix = 'training_data/'
+
+    elif loader_type == 'test':
+        prefix = 'test_data'
+
+    else:
+        return None
+
+    label_dirs = os.listdir(prefix)
+    for label_dir in label_dirs:
+        if 'spec' not in label_dir:
+            continue
+        path = prefix + label_dir + '/'
+        for wav_file in os.listdir(path):
+            files.append(spectogram_file, int(prefix[4:]))
+
+        return Spectogram_DataLoader(files)
+
+        
+
+loader('train')
