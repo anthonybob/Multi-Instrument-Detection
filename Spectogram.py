@@ -25,6 +25,8 @@ class Spectogram():
 
     @staticmethod
     def float_to_string(real_num):
+        if abs(real_num) < 0.01:
+            return "0"
         return "{:.2f}".format(real_num)
 
     #The spectogram file output is as follows:
@@ -98,4 +100,4 @@ def convert_signals_to_spectograms():
     print('Done Converting!')
         
 if __name__ == '__main__':
-    file_test()
+    convert_signals_to_spectograms()
