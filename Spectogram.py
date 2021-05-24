@@ -4,11 +4,12 @@ import librosa.display
 import scipy
 import numpy as np
 import os
+import cv2
 class Spectogram():
     #Window length is the size of the window
     #Window padding is number of zeros to pad audio after window is applied
     #Hop length is the number of audio samples between each STFT output
-    def __init__(self, window_length= 512, window_padding=0, hop_length=256, window=scipy.signal.windows.hann):
+    def __init__(self, window_length= 2048, window_padding=0, hop_length=None, window=scipy.signal.windows.hann):
         self.window_length = window_length
         self.window_padding = window_padding
         self.window = window
@@ -30,8 +31,10 @@ class Spectogram():
         return "{:.2f}".format(real_num)
 
     def signal_to_spectogram_file(self, wav_file, spectogram_file):
-        spectogram_matrix = self.signal_to_spectogram(wav_file)
-        np.savetxt(spectogram_file,  np.abs(spectogram_matrix), fmt = '%.2f')
+        spectogram_matrix = np.abs(self.signal_to_spectogram(wav_file))
+        #Downsample image with proper anti-aliasing
+        spectogram_matrix = cv2.resize(spectogram_matrix, (150,150), interpolation = cv2.INTER_AREA)
+        np.savetxt(spectogram_file, spectogram_matrix, fmt = '%.2f')
     @staticmethod
     def load_spectogram_from_file(spectogram_file):
         return np.loadtxt(spectogram_file)
@@ -58,11 +61,11 @@ class Spectogram():
 
 def file_test():
     spectogram = Spectogram()
-    spec=spectogram.signal_to_spectogram('test_data/0/Medley-solos-DB_test-0_7f9c729c-396b-5cd7-f2ea-b137d8ee7222.wav')
-    print(spec.shape[0], spec.shape[1])
+    spec=spectogram.signal_to_spectogram('test_data/1/Medley-solos-DB_test-1_81fb3f6e-980f-5bfe-f1c0-b9f1a7cca824.wav')
     Spectogram.display_complex_spectogram(spec)
-    spectogram.signal_to_spectogram_file('test_data/0/Medley-solos-DB_test-0_7f9c729c-396b-5cd7-f2ea-b137d8ee7222.wav', 'spec')
+    spectogram.signal_to_spectogram_file('test_data/1/Medley-solos-DB_test-1_81fb3f6e-980f-5bfe-f1c0-b9f1a7cca824.wav', 'spec')
     spec=Spectogram.load_spectogram_from_file('spec')
+    print(spec.shape[0], spec.shape[1])
     Spectogram.display_real_spectogram(spec)
 
 def convert_signals_to_spectograms():
