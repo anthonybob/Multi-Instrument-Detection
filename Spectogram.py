@@ -30,14 +30,22 @@ class Spectogram():
             return "0"
         return "{:.2f}".format(real_num)
 
-    def signal_to_spectogram_file(self, wav_file, spectogram_file):
-        spectogram_matrix = np.abs(self.signal_to_spectogram(wav_file))
-        #Downsample image with proper anti-aliasing
-        spectogram_matrix = cv2.resize(spectogram_matrix, (150,150), interpolation = cv2.INTER_AREA)
-        np.savetxt(spectogram_file, spectogram_matrix, fmt = '%.2f')
+    def signal_to_spectogram_file(self, spectogram_file, compressed_file, dims):
+        spec = Spectogram.load_spectogram_from_npy_file(spectogram_file)
+        spectogram_matrix  =cv2.resize(spec, dims, interpolation=cv2.INTER_AREA)
+        np.savetxt(compressed_file, spectogram_matrix, fmt = '%.2f')
+
+    @staticmethod
+    def compress_spectogram(spectogram, dims):
+        return cv2.resize(spectogram, dims, interpolation=cv2.INTER_AREA)
+
     @staticmethod
     def load_spectogram_from_file(spectogram_file):
         return np.loadtxt(spectogram_file)
+
+    @staticmethod
+    def load_spectogram_from_npy_file(npy_file):
+        return np.load(npy_file)
 
     @staticmethod
     def real_spectogram_to_db_spectogram(spectogram):
@@ -59,11 +67,11 @@ class Spectogram():
         plt.colorbar()
         plt.show()
 
-def file_test():
+def file_test(test_file):
     spectogram = Spectogram()
-    spec=spectogram.signal_to_spectogram('test_data/1/Medley-solos-DB_test-1_81fb3f6e-980f-5bfe-f1c0-b9f1a7cca824.wav')
-    Spectogram.display_complex_spectogram(spec)
-    spectogram.signal_to_spectogram_file('test_data/1/Medley-solos-DB_test-1_81fb3f6e-980f-5bfe-f1c0-b9f1a7cca824.wav', 'spec')
+    spec=Spectogram.load_spectogram_from_npy_file(test_file)
+    Spectogram.display_real_spectogram(spec)
+    spectogram.signal_to_spectogram_file(test_file, 'spec', (150,150))
     spec=Spectogram.load_spectogram_from_file('spec')
     print(spec.shape[0], spec.shape[1])
     Spectogram.display_real_spectogram(spec)
@@ -83,4 +91,4 @@ def convert_signals_to_spectograms():
     print('Done Converting!')
         
 if __name__ == '__main__':
-    convert_signals_to_spectograms()
+    file_test('/media/grant/Home/mtg-jamendo-dataset/mtg-dataset/00/1100.npy')
