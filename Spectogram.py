@@ -24,13 +24,18 @@ class Spectogram():
         spectogram_matrix = librosa.stft(signal, n_fft = self.window_length + self.window_padding, hop_length=self.hop_length)
         return spectogram_matrix
 
+    def signal_to_spectogram_file(self, wav_file, compressed_file, dims):
+        spec = self.signal_to_spectogram(wav_file)
+        spectogram_matrix  =cv2.resize(np.abs(spec), dims, interpolation=cv2.INTER_AREA)
+        np.savetxt(compressed_file, spectogram_matrix, fmt = '%.2f')
+
     @staticmethod
     def float_to_string(real_num):
         if abs(real_num) < 0.01:
             return "0"
         return "{:.2f}".format(real_num)
 
-    def signal_to_spectogram_file(self, spectogram_file, compressed_file, dims):
+    def npy_to_spectogram_file(self, spectogram_file, compressed_file, dims):
         spec = Spectogram.load_spectogram_from_npy_file(spectogram_file)
         spectogram_matrix  =cv2.resize(spec, dims, interpolation=cv2.INTER_AREA)
         np.savetxt(compressed_file, spectogram_matrix, fmt = '%.2f')
@@ -67,14 +72,26 @@ class Spectogram():
         plt.colorbar()
         plt.show()
 
-def file_test(test_file):
+def npy_file_test(test_file):
     spectogram = Spectogram()
     spec=Spectogram.load_spectogram_from_npy_file(test_file)
     Spectogram.display_real_spectogram(spec)
-    spectogram.signal_to_spectogram_file(test_file, 'spec', (150,150))
+    spectogram.npy_to_spectogram_file(test_file, 'spec', (500,150))
     spec=Spectogram.load_spectogram_from_file('spec')
     print(spec.shape[0], spec.shape[1])
     Spectogram.display_real_spectogram(spec)
+
+def wav_file_test(wav_file):
+    spectogram = Spectogram()
+    spec=spectogram.signal_to_spectogram(wav_file)
+    print(spec.shape[0], spec.shape[1])
+    Spectogram.display_complex_spectogram(spec)
+    spectogram.signal_to_spectogram_file(wav_file, 'spec', (150,150))
+    spec=Spectogram.load_spectogram_from_file('spec')
+    print(spec.shape[0], spec.shape[1])
+    Spectogram.display_real_spectogram(spec)
+
+
 
 def convert_signals_to_spectograms():
     spectogram = Spectogram()
@@ -91,4 +108,5 @@ def convert_signals_to_spectograms():
     print('Done Converting!')
         
 if __name__ == '__main__':
-    file_test('/media/grant/Home/mtg-jamendo-dataset/mtg-dataset/00/1100.npy')
+    wav_file_test('test_data/1/Medley-solos-DB_test-1_81fb3f6e-980f-5bfe-f1c0-b9f1a7cca824.wav')
+    npy_file_test('/media/grant/Home/mtg-jamendo-dataset/mtg-dataset/01/1101.npy')
