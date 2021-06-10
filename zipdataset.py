@@ -22,7 +22,12 @@ def getInstrumentFilePaths(directory, split):
 
     if(split == "train"):
         labels = 'mtg_jamendo_dataset/data/splits/split-0/autotagging_instrument-train.tsv'
-        tracks, tags, extra = commons.read_file(labels) 
+    elif(split == "validation"):
+        labels = 'mtg_jamendo_dataset/data/splits/split-0/autotagging_instrument-validation.tsv'
+    elif(split == "test"):
+        labels = 'mtg_jamendo_dataset/data/splits/split-0/autotagging_instrument-test.tsv'
+
+    tracks, tags, extra = commons.read_file(labels) 
 
     print("searching for file paths...")
     for track in tracks:
