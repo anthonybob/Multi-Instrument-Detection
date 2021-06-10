@@ -15,7 +15,7 @@ Model.py contains the implementation of the feedforward neural network on the Me
 
 The jupyter notebook contains the implementation of the convolutional recurrent neural network. Each track was quite long, so I started working on an attention based network. The model makes predictions for 3 second snippets and aggregates the logits and loss for the whole track. This ensures we don't miss out on any of the instruments included in the track, since there are multiple labels per track. This model is not fully functional, but it just needs a proper data generator to complete the training loop. This type of dataset and this type of network has great potential, so for future work we would like to get this model to train properly.
 
-In the root directory of our repository, there is a file called 'model' that is a saved model from training the feedforward network. If you run Model.py and give it a wav_file as a command line argument, it was classify the wav_file as either being a piano or a violin. 
+In the root directory of our repository, there is a file called 'model' that is a saved model from training the feedforward network. If you run Model.py and give it a wav_file as a command line argument, it will classify the wav_file as either being a piano or a violin. 
 > python Model.py wav_file
 
 Our LICENSE file is in the root directory
